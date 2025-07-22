@@ -47,17 +47,21 @@ public class RestAssuredExercises2Test {
      * respectively, to extract the required response body elements
      ******************************************************/
 
-    @Test
-    public void requestDataForCustomer12212_checkNames_expectJohnSmith() {
-
+    @ParameterizedTest
+    @CsvSource({
+        "12212,John,Smith",
+        "12323,Susan,Holmes",
+        "14545,Anna,Grant"
+    })
+    public void requestDataForCustomer12212_checkNames_expectJohnSmith(String customerID, String firstName, String lastName) {
         given().
             spec(requestSpec).
         when().
-            get("/customer/12212").
+            get("/customer/"+customerID).
         then().
             assertThat().
-            body("firstName", equalTo("John")).
-            body("lastName", equalTo("Smith"));
+            body("firstName", equalTo(firstName)).
+            body("lastName", equalTo(lastName));
     }
 
     @Test
