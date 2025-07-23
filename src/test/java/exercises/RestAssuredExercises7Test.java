@@ -8,6 +8,7 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,18 +41,19 @@ public class RestAssuredExercises7Test {
          *
          * Store the user id in a variable of type int
          ******************************************************/
-
+            int userId =
             given().
                 spec(requestSpec).
             when().
-            then();
+                    get("/users").
+            then().extract().path("find{it.username=='Karianne'}.id");
 
         /*******************************************************
          * Use a JUnit assertEquals to verify that the userId
          * is equal to 4
          ******************************************************/
 
-
+        assertEquals(4, userId);
 
         /*******************************************************
          * Perform a GET to /albums and extract all albums that
@@ -61,18 +63,19 @@ public class RestAssuredExercises7Test {
          *
          * Store these in a variable of type List<Integer>.
          ******************************************************/
-
+            List<Integer> albumList =
             given().
                 spec(requestSpec).
             when().
-            then();
+                    get("/albums").
+            then().extract().path(String.format("findAll{it.userId==%d}.id",userId));
 
         /*******************************************************
          * Use a JUnit assertEquals to verify that the list has
          * exactly 10 items (hint: use the size() method)
          ******************************************************/
 
-
+        assertEquals(10, albumList.size());
 
         /*******************************************************
          * Perform a GET to /albums/XYZ/photos, where XYZ is the
@@ -87,9 +90,10 @@ public class RestAssuredExercises7Test {
          * (the accepted answer should help you solve this one).
          ******************************************************/
 
-            given().
+            int id= albumList.get(4);
+             List<Photo> photoList = Arrays.asList(given().
                 spec(requestSpec).
-            when();
+            when().get(String.format("/albums/%d/photos",id)).then().extract().as(Photo[].class));
 
         /*******************************************************
          * Use a JUnit assertEquals to verify that the title of
@@ -99,6 +103,6 @@ public class RestAssuredExercises7Test {
          * specific index from a List
          ******************************************************/
 
-
+        assertEquals(photoList.get(31).getTitle(), "pariatur sunt eveniet");
     }
 }
